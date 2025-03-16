@@ -1,14 +1,11 @@
 import React from 'react'
 import Navbar from '../../componenets/Navbar/Navbar'
-import {Link} from 'react-router-dom'
-import PasswordInput from '../../componenets/input/PasswordInput'
-import { validateEmail } from '../../utils/helper'
-import { useState } from 'react'
-import Profileinfo from '../../componenets/Cards/Profileinfo'
+import { MdCreate, MdDelete} from 'react-icons/md'
 import NoteCard from '../../componenets/Cards/NoteCard'
+import { MdAdd } from 'react-icons/md'
 
 
-const Home = ({title,date,conte}) => {
+const Home = () => {
   return (
     <>
       <Navbar /> 
@@ -16,8 +13,21 @@ const Home = ({title,date,conte}) => {
 
       <div className = "container mx-auto">
 
-        <NoteCard />
+        <div className="grid grid-cols-3 gap-4 mt-8">
+          <NoteCard title = "Meeting on 7th" date="3rd apr2024" content="Meeting on 7th Meeting on 7th"
+          tags="#Meeting"
+          isPinned={true}
+          onEdit={()=>{}}
+          onDelete={()=>{}}
+          onPinNote={()=>{}} 
+          />
+          
+        </div>
       </div>
+
+      <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" onClick={() => {}}>
+        <MdAdd className="text-[32px] text-white" />
+      </button>
     </>
   )
 }
