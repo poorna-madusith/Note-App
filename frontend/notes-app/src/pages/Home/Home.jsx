@@ -1,6 +1,5 @@
 import React from 'react'
 import Navbar from '../../componenets/Navbar/Navbar'
-import { MdCreate, MdDelete} from 'react-icons/md'
 import NoteCard from '../../componenets/Cards/NoteCard'
 import { MdAdd } from 'react-icons/md'
 import AddEditNotes from './AddEditNotes'
@@ -12,7 +11,7 @@ import { useState } from 'react'
 const Home = () => {
 
   const [openAddEditModel, setOpenAddEditModal] = useState({
-    isShow: false,
+    isShown: false,
     type:"add",
     data:null,
   });
@@ -58,7 +57,13 @@ const Home = () => {
 
 
 
-        <AddEditNotes />
+        <AddEditNotes 
+        type = {openAddEditModel.type}
+        noteData = {openAddEditModel.data}
+        onClose = {()=>{
+          setOpenAddEditModal({isShown: false,type:"add", data: null});
+        }}
+        />
       </Modal>
 
     </>
