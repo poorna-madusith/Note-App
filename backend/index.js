@@ -1,4 +1,4 @@
-require ("dotenv").config();
+require("dotenv").config();
 
 
 const config = require("./config.json")
@@ -13,7 +13,7 @@ const cors = require("cors");
 const app = express();
 
 const jwt = require("jsonwebtoken");
-const {authenticationToken} = require("./utilities");
+const {authenticateToken} = require("./utilities");
 
 
 app.use(express.json());
@@ -47,6 +47,34 @@ app.post("/create-account", async (req,res)=>{
     if(!password){
         return res.status(400).json({error:true, message:"Password is required"})
     }
+
+
+    const isUser = await User.findOne({email: email});
+
+    if(isUser){
+        return res.json({error: true , message: "User already exist"})
+    }
+
+    const user = new User({
+        fullname,
+        email,
+        password,
+    });
+
+
+    await user.save();
+
+    const accessToken = jwt.sign ({user},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"36000m",});
+
+    return res.json({
+        eror:false,
+        user,
+        accessToken,
+        message:"Registration Successfull"
+    })
+
+
+
 })
 
 
