@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../../componenets/Navbar/Navbar'
 import NoteCard from '../../componenets/Cards/NoteCard'
 import { MdAdd } from 'react-icons/md'
 import AddEditNotes from './AddEditNotes'
 import Modal from 'react-modal'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axiosInstance from '../../utils/axiosInstance'
 
 
 
@@ -15,6 +17,32 @@ const Home = () => {
     type:"add",
     data:null,
   });
+
+
+  const [userInfo,setUserInfo] = useState(null)
+
+  const navigate = useNavigate();
+
+  //get user info
+  const getUserInfo = async ()=>{
+    try {
+      const response  = await axiosInstance.get("/get-user");
+      if (response.data && response.data.user){
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if(error.response.status === 401){
+        localStorage.clear();
+        navigate("/login");
+      }
+      
+    }
+  };
+
+  useEffect(()=>{
+    getUserInfo();
+    return ()=>{}
+  },[])
 
   return (
     <>
