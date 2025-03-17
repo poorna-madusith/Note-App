@@ -41,12 +41,12 @@ const Home = () => {
 
   useEffect(()=>{
     getUserInfo();
-    return ()=>{}
+    return ()=>{};
   },[])
 
   return (
     <>
-      <Navbar /> 
+      <Navbar userInfo={userInfo}/> 
 
 
       <div className = "container mx-auto">
