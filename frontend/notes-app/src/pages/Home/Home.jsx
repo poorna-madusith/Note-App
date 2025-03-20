@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import moment from 'moment'
 import Toast from '../../componenets/ToastMessage/Toast'
+import EmptyCard from '../../componenets/EmptyCard/EmptyCard'
 
 
 
@@ -91,6 +92,30 @@ const Home = () => {
 
   }
 
+
+  //Delete note
+  const deleteNote = async (data)=>{
+
+    const noteId = data._id;
+
+    try {
+      const response = await axiosInstance.delete("/delete-note/"+noteId);
+
+      if(response.data && !response.data.error){
+        showToastMsg("Note Deleted successfully", 'delete')
+        getAllNotes();
+      }
+    } catch (error) {
+      if(error.response && error.response.data && error.response.data.message){
+        console.log("An unexpected error occures.please try again later")
+      }
+      
+    }
+
+  }
+
+
+
   useEffect(()=>{
     getAllNotes();
     getUserInfo();
@@ -104,7 +129,7 @@ const Home = () => {
 
       <div className = "container mx-auto">
 
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        {allNotes.length > 0? <div className="grid grid-cols-3 gap-4 mt-8">
           {allNotes.map((item, index)=>(
             <NoteCard 
             key={item._id}
@@ -114,13 +139,13 @@ const Home = () => {
             tags={item.tags}
             isPinned={item.isPinned}
             onEdit={()=>{handleEdit(item)}}
-            onDelete={()=>{}}
+            onDelete={()=>{deleteNote(item)}}
             onPinNote={()=>{}} 
             />
           ))}
           
           
-        </div>
+        </div> : <EmptyCard />}
       </div>
 
       <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
