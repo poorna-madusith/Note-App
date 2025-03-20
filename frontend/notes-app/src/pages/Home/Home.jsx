@@ -8,6 +8,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import moment from 'moment'
+import Toast from '../../componenets/ToastMessage/Toast'
+
+
 
 
 
@@ -21,6 +24,12 @@ const Home = () => {
     data:null,
   });
 
+  const [showToastMessage, setShowToastMessage] = useState({
+    isShown: false,
+    message: "",
+    type: "add",
+  })
+
   const [allNotes, setAllNotes] = useState([])
   const [userInfo,setUserInfo] = useState(null)
 
@@ -32,6 +41,21 @@ const Home = () => {
       isShown: true,
       data: noteDetails,
       type: "edit",
+    })
+  }
+
+  const showToastMsg=(message, type = "add")=>{
+    setShowToastMessage({
+      isShown: true,
+      message,
+      type,
+    })
+  }
+  const handleCloseToast =()=>{
+    setShowToastMessage({
+      isShown: false,
+      message: "",
+      type: "add",
     })
   }
 
@@ -129,8 +153,16 @@ const Home = () => {
         }}
 
         getAllNotes= {getAllNotes}
+        showToastMsg={showToastMsg}
         />
       </Modal>
+
+      <Toast 
+        isShown={showToastMessage.isShown}
+        message={showToastMessage.message}
+        type={showToastMessage.type}
+        onClose={handleCloseToast}
+      />
 
     </>
   )
