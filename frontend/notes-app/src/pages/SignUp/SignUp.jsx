@@ -5,6 +5,7 @@ import PasswordInput from '../../componenets/input/PasswordInput'
 import { validateEmail } from '../../utils/helper'
 import { useState } from 'react'
 import axiosInstance from '../../utils/axiosInstance'
+import AnimatedBackground from '../../componenets/AnimatedBackground/AnimatedBackground'
 
 
 
@@ -71,7 +72,8 @@ const SignUp = () => {
 
   return (
     <>
-      <Navbar />
+    <AnimatedBackground>
+      <Navbar hideControls={true} />
 
       <div className = "flex items-center justify-center mt-28">
         <div className="w-96 border rounded bg-white px-7 py-10">
@@ -99,6 +101,7 @@ const SignUp = () => {
             </form>
         </div>
       </div>
+    </AnimatedBackground>
     </>
   )
 }

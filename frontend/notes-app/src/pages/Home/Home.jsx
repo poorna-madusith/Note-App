@@ -12,6 +12,7 @@ import Toast from '../../componenets/ToastMessage/Toast'
 import EmptyCard from '../../componenets/EmptyCard/EmptyCard'
 import AddNotesImg from '../../assets/images/AddNotesImg.png'
 import NoData from '../../assets/images/NoData.png'
+import AnimatedBackground from '../../componenets/AnimatedBackground/AnimatedBackground'
 
 
 
@@ -167,76 +168,86 @@ const Home = () => {
 
   return (
     <>
-      <Navbar 
-        userInfo={userInfo} 
-        onSearchNote={onSearchNote}
-        onClearSearch={clearSearch} 
-      /> 
-      
-      <div className = "container mx-auto">
+      <AnimatedBackground className="min-h-screen">
+        <Navbar 
+          userInfo={userInfo} 
+          onSearchNote={onSearchNote}
+          onClearSearch={clearSearch} 
+        /> 
+        
+        <div className = "container mx-auto px-8">
 
-        {allNotes.length > 0? <div className="grid grid-cols-3 gap-4 mt-8">
-          {allNotes.map((item, index)=>(
-            <NoteCard 
-            key={item._id}
-            title = {item.title}
-            date={item.createdOn} 
-            content= {item.content}
-            tags={item.tags}
-            isPinned={item.isPinned}
-            onEdit={()=>{handleEdit(item)}}
-            onDelete={()=>{deleteNote(item)}}
-            onPinNote={()=>{handlePinNote(item)}} 
-            />
-          ))}
-          
-          
-        </div> : <EmptyCard
-         imgSrc={isSearch? NoData: AddNotesImg} 
-         message={isSearch?`OOps! No notes found for "${searchQuery}" `: `Start creating your first note!Click 'Add' button to get started`}  />}
-      </div>
+          {allNotes.length > 0? <div className="grid grid-cols-3 gap-6 mt-8">
+            {allNotes.map((item, index)=>(
+              <NoteCard 
+              key={item._id}
+              title = {item.title}
+              date={item.createdOn} 
+              content= {item.content}
+              tags={item.tags}
+              isPinned={item.isPinned}
+              onEdit={()=>{handleEdit(item)}}
+              onDelete={()=>{deleteNote(item)}}
+              onPinNote={()=>{handlePinNote(item)}} 
+              />
+            ))}
+            
+            
+          </div> : <EmptyCard
+           imgSrc={isSearch? NoData: AddNotesImg} 
+           message={isSearch?`OOps! No notes found for "${searchQuery}" `: `Start creating your first note!Click 'Add' button to get started`}  />}
+        </div>
 
-      <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
-      onClick={() => {
-        setOpenAddEditModal({ isShown: true, type: "add", data:null})
-      }}>
-        <MdAdd className="text-[32px] text-white" />
-      </button>
+        <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10 z-50" 
+        onClick={() => {
+          setOpenAddEditModal({ isShown: true, type: "add", data:null})
+        }}>
+          <MdAdd className="text-[32px] text-white" />
+        </button>
 
+        {openAddEditModel.isShown && (
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[999]">
       <Modal 
-        isOpen = {openAddEditModel.isShown}
-        onRequestClose = {()=>{}}
-        style = {{
-          overlay:{
-            backgroundColor: "rgba(0,0,0,0.2"
-          },
-        }}
+          isOpen = {openAddEditModel.isShown}
+          onRequestClose = {()=>{
+            setOpenAddEditModal({isShown: false, type:"add", data: null});
+          }}
+          style = {{
+            overlay:{
+              backgroundColor: "rgba(0,0,0,0.2)",
+              zIndex: 100
+            },
+            content: {
+              zIndex: 101
+            }
+          }}
+          contentLabel=""
+          className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-scroll">
 
-        contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-scroll">
 
 
 
+          <AddEditNotes 
+          type = {openAddEditModel.type}
+          noteData = {openAddEditModel.data}
+          onClose = {()=>{
+            setOpenAddEditModal({isShown: false,type:"add", data: null});
+          }}
 
-        <AddEditNotes 
-        type = {openAddEditModel.type}
-        noteData = {openAddEditModel.data}
-        onClose = {()=>{
-          setOpenAddEditModal({isShown: false,type:"add", data: null});
-        }}
+          getAllNotes= {getAllNotes}
+          showToastMsg={showToastMsg}
+          />
+        </Modal>
+    </div>
+  )}
 
-        getAllNotes= {getAllNotes}
-        showToastMsg={showToastMsg}
+        <Toast 
+          isShown={showToastMessage.isShown}
+          message={showToastMessage.message}
+          type={showToastMessage.type}
+          onClose={handleCloseToast}
         />
-      </Modal>
-
-      <Toast 
-        isShown={showToastMessage.isShown}
-        message={showToastMessage.message}
-        type={showToastMessage.type}
-        onClose={handleCloseToast}
-      />
-
+      </AnimatedBackground>
     </>
   )
 }
