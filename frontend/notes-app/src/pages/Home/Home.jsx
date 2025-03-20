@@ -42,6 +42,22 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  const handlePinNote = async (noteData) => {
+    const noteId = noteData._id;
+    try {
+      const response = await axiosInstance.put("/update-note-pinned/" + noteId, {
+        isPinned: !noteData.isPinned
+      });
+
+      if (response.data && !response.data.error) {
+        showToastMsg("Note " + (!noteData.isPinned ? "pinned" : "unpinned") + " successfully");
+        getAllNotes();
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again later");
+    }
+  };
+
 
   const handleEdit = async (noteDetails)=>{
     setOpenAddEditModal({
@@ -170,7 +186,7 @@ const Home = () => {
             isPinned={item.isPinned}
             onEdit={()=>{handleEdit(item)}}
             onDelete={()=>{deleteNote(item)}}
-            onPinNote={()=>{}} 
+            onPinNote={()=>{handlePinNote(item)}} 
             />
           ))}
           
