@@ -11,6 +11,7 @@ import moment from 'moment'
 import Toast from '../../componenets/ToastMessage/Toast'
 import EmptyCard from '../../componenets/EmptyCard/EmptyCard'
 import AddNotesImg from '../../assets/images/AddNotesImg.png'
+import NoData from '../../assets/images/NoData.png'
 
 
 
@@ -35,6 +36,9 @@ const Home = () => {
 
   const [allNotes, setAllNotes] = useState([])
   const [userInfo,setUserInfo] = useState(null)
+
+  const [isSearch, setIsSearch] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const navigate = useNavigate();
 
@@ -116,7 +120,28 @@ const Home = () => {
 
   }
 
+  //Search for a note
+  const onSearchNote = async (query) => {
+    try {
+      setSearchQuery(query);
+      const response = await axiosInstance.get("/search-notes", {
+        params: { query }
+      });
 
+      if(response.data && response.data.notes){
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      }  
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const clearSearch = () => {
+    setIsSearch(false);
+    setSearchQuery("");
+    getAllNotes();
+  }
 
   useEffect(()=>{
     getAllNotes();
@@ -126,9 +151,12 @@ const Home = () => {
 
   return (
     <>
-      <Navbar userInfo={userInfo}/> 
-
-
+      <Navbar 
+        userInfo={userInfo} 
+        onSearchNote={onSearchNote}
+        onClearSearch={clearSearch} 
+      /> 
+      
       <div className = "container mx-auto">
 
         {allNotes.length > 0? <div className="grid grid-cols-3 gap-4 mt-8">
@@ -147,7 +175,9 @@ const Home = () => {
           ))}
           
           
-        </div> : <EmptyCard imgSrc={AddNotesImg} message={`Start creating your first note!Click 'Add' button to get started`}  />}
+        </div> : <EmptyCard
+         imgSrc={isSearch? NoData: AddNotesImg} 
+         message={isSearch?`OOps! No notes found for "${searchQuery}" `: `Start creating your first note!Click 'Add' button to get started`}  />}
       </div>
 
       <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
